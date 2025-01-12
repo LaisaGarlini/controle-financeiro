@@ -17,3 +17,39 @@ INSERT INTO public.usuario(
 INSERT INTO public.categoria(
 	id, nome, tipo, empresa_id)
 	VALUES (1, 'Manutenção', 1, 1);
+
+INSERT INTO public.pais(
+	id, nome, empresa_id)
+	VALUES (1058, 'BRASIL', 1);
+
+INSERT INTO public.estado(
+	id, nome, sigla, "paisId", empresa_id)
+	VALUES (1, 'SANTA CATARINA', 'SC', 1058, 1);
+
+INSERT INTO public.municipio(
+	id, nome, "estadoId", empresa_id)
+	VALUES (4214805, 'RIO DO SUL', 1, 1);
+
+INSERT INTO public.bairro(
+	id, nome, "municipioId", empresa_id)
+	VALUES (1, 'BUDAG', 4214805, 1);
+
+INSERT INTO public.logradouro(
+	id, nome, "bairroId", empresa_id)
+	VALUES (1, 'R TAIO', 1, 1);
+
+INSERT INTO public.endereco(
+	id, "logradouroId", numero, complemento, cep, empresa_id)
+	VALUES (1, 1, 307, 'Casa', '89165-326', 1);
+
+INSERT INTO public.pessoa(
+	id, nome, tipo, cpf_cnpj, empresa_id)
+	VALUES (1, 'Laisa Garlini', 'F', '112.543.659-07', 1);
+
+INSERT INTO public.endereco_pessoa(
+	"pessoaId", "enderecoId", empresa_id)
+	VALUES (1, 1, 1);
+
+INSERT INTO public.financeiro(
+	id, descricao, fornecedor_id, valor_bruto, valor_pago, data_vencimento, categoria_id, empresa_id)
+	VALUES (1, 'Teste 1', 1, 1000, 900, now(), 1, 1);

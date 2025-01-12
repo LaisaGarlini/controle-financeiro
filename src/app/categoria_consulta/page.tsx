@@ -50,41 +50,41 @@ const ContasPagarConsulta: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async () => {
-    console.log("selectedIds", selectedIds);
-    if (selectedIds.size === 0) {
-      alert("Selecione ao menos uma categoria para excluir.");
-      return;
-    }
+  // const handleDelete = async () => {
+  //   console.log("selectedIds", selectedIds);
+  //   if (selectedIds.size === 0) {
+  //     alert("Selecione ao menos uma categoria para excluir.");
+  //     return;
+  //   }
 
-    const confirmDelete = window.confirm(
-      "Você tem certeza que deseja excluir as categorias selecionadas?"
-    );
+  //   const confirmDelete = window.confirm(
+  //     "Você tem certeza que deseja excluir as categorias selecionadas?"
+  //   );
 
-    if (!confirmDelete) return;
+  //   if (!confirmDelete) return;
 
-    try {
-      const response = await fetch("/api/categoria", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: Array.from(selectedIds) }),
-      });
+  //   try {
+  //     const response = await fetch("/api/categoria", {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ ids: Array.from(selectedIds) }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Erro ao excluir categorias.");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Erro ao excluir categorias.");
+  //     }
 
-      const remainingData = data.filter((row) => !selectedIds.has(row.id));
-      setData(remainingData);
-      setSelectedIds(new Set());
-      alert("Categorias excluídas com sucesso.");
-    } catch (error: any) {
-      console.error(error.message);
-      alert(error.message || "Erro desconhecido ao excluir categorias.");
-    }
-  };
+  //     const remainingData = data.filter((row) => !selectedIds.has(row.id));
+  //     setData(remainingData);
+  //     setSelectedIds(new Set());
+  //     alert("Categorias excluídas com sucesso.");
+  //   } catch (error: any) {
+  //     console.error(error.message);
+  //     alert(error.message || "Erro desconhecido ao excluir categorias.");
+  //   }
+  // };
 
   const sortedData = [...data].sort((a, b) => {
     if (a[sortColumn] < b[sortColumn]) {
@@ -119,7 +119,16 @@ const ContasPagarConsulta: React.FC = () => {
 
   return (
     <div className="h-screen w-full">
-      <Header isConsultaScreen={true} title="Categorias" userName="Domingos" companyName="DELL Transportes" novo="categoria_cadastro" />
+      <Header 
+        isConsultaScreen={true} 
+        title="Categorias" 
+        userName="Domingos" 
+        companyName="DELL Transportes" 
+        novo="categoria_cadastro" 
+        selectedIds={selectedIds} 
+        data={data}
+        setData={setData}
+      />
       <main className="w-full h-[91%] flex flex-col gap-8 p-3">
         {loading ? (
           <p>Carregando dados...</p>

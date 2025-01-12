@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fira_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster, toast } from 'sonner'
 
 const firaSans = Fira_Sans({
   subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({
         className={`${firaSans.className} antialiased`}
       >
         {children}
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

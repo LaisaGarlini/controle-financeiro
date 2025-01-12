@@ -12,7 +12,6 @@ model Empresa {
   nome                String    @db.VarChar(100)
   deve_filtrar_por_id Boolean   @default(false)
 
-  // usuarios            Usuario[]
   contas_financeiras  ContaFinanceira[]
   condicoes_pagamento CondicaoPagamento[]
   formas_pagamento    FormaPagamento[]
@@ -27,6 +26,7 @@ model Empresa {
   enderecos           Endereco[]
   financeiros         Financeiro[]
   enderecoPessoas     EnderecoPessoa[]
+  ctes                CTE[]
 
   @@map("empresa")
 }
@@ -39,8 +39,6 @@ model Usuario {
   data_criacao     DateTime @default(now())
   data_atualizacao DateTime @default(now()) @updatedAt
   ativo            Boolean  @default(true)
-  // empresa_id       Int
-  // empresa          Empresa  @relation(fields: [empresa_id], references: [id])
 
   @@map("usuario")
 }
@@ -148,6 +146,10 @@ model Pessoa {
   financeiros       Financeiro[]
   enderecos EnderecoPessoa[]
 
+  emitentes      CTE[] @relation("EmitentePessoa")
+  remetentes     CTE[] @relation("RemetentePessoa")
+  destinatarios  CTE[] @relation("DestinatarioPessoa")
+
   @@map("pessoa")
 }
 
@@ -182,6 +184,9 @@ model Municipio {
   estado      Estado     @relation(fields: [estadoId], references: [id])
   empresa     Empresa    @relation(fields: [empresa_id], references: [id])
   bairros     Bairro[]
+
+  ctes_inicio  CTE[] @relation("MunicipioInicio")
+  ctes_fim     CTE[] @relation("MunicipioFim")
 
   @@map("municipio")
 }
@@ -235,4 +240,26 @@ model EnderecoPessoa {
 
   @@id([pessoaId, enderecoId])
   @@map("endereco_pessoa")
+}
+
+model CTE {
+  id                Int       @id @default(autoincrement())
+  chave             String    @unique @db.VarChar(44)
+  data_emissao      DateTime  @db.Date
+  valor             Decimal   @db.Decimal(10, 2)
+  municipio_inicio_id Int
+  municipio_fim_id Int
+  emitente_id       Int
+  remetente_id      Int
+  destinatario_id   Int
+  empresa_id        Int
+
+  municipio_inicio  Municipio @relation("MunicipioInicio", fields: [municipio_inicio_id], references: [id])
+  municipio_fim     Municipio @relation("MunicipioFim", fields: [municipio_fim_id], references: [id])
+  emitente          Pessoa    @relation("EmitentePessoa", fields: [emitente_id], references: [id])
+  remetente         Pessoa    @relation("RemetentePessoa", fields: [remetente_id], references: [id])
+  destinatario      Pessoa    @relation("DestinatarioPessoa", fields: [destinatario_id], references: [id])
+  empresa           Empresa   @relation(fields: [empresa_id], references: [id])
+
+  @@map("cte")
 }
