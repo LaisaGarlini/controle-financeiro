@@ -1,0 +1,19 @@
+INSERT INTO public.empresa(
+	id, nome, deve_filtrar_por_id)
+	VALUES (1, 'DELL Transportes', TRUE);
+
+INSERT INTO public.empresa(
+	id, nome, deve_filtrar_por_id)
+	VALUES (2, 'Domingos - Pessoal', TRUE);
+
+INSERT INTO public.empresa(
+	id, nome, deve_filtrar_por_id)
+	VALUES (3, 'Empresa e Pessoal', False);
+
+INSERT INTO public.usuario(
+	id, nome, email, senha, ativo)
+	VALUES (1, 'Administrador', 'laisa.garlini@hotmail.com', '123', TRUE);
+
+INSERT INTO public.categoria(
+	id, nome, tipo, empresa_id)
+	VALUES (1, 'Manutenção', 1, 1);

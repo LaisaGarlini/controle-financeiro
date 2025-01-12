@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id                  Int       @id @default(autoincrement())
+  nome                String    @db.VarChar(100)
+  deve_filtrar_por_id Boolean   @default(false)
+
+  // usuarios            Usuario[]
+  contas_financeiras  ContaFinanceira[]
+  condicoes_pagamento CondicaoPagamento[]
+  formas_pagamento    FormaPagamento[]
+  categorias          Categoria[]
+  bancos              Banco[]
+  pessoas             Pessoa[]
+  paises              Pais[]
+  estados             Estado[]
+  municipios          Municipio[]
+  bairros             Bairro[]
+  logradouros         Logradouro[]
+  enderecos           Endereco[]
+  financeiros         Financeiro[]
+  enderecoPessoas     EnderecoPessoa[]
+
+  @@map("empresa")
+}
+
+model Usuario {
+  id               Int      @id @default(autoincrement())
+  nome             String   @db.VarChar(100)
+  email            String   @unique @db.VarChar(255)
+  senha            String   @db.VarChar(255)
+  data_criacao     DateTime @default(now())
+  data_atualizacao DateTime @default(now()) @updatedAt
+  ativo            Boolean  @default(true)
+  // empresa_id       Int
+  // empresa          Empresa  @relation(fields: [empresa_id], references: [id])
+
+  @@map("usuario")
+}
+
+model ContaFinanceira {
+  id            Int      @id @default(autoincrement())
+  titular_id    Int
+  banco_id      Int
+  agencia       String   @db.VarChar(20)
+  numero_conta  String   @db.VarChar(20)
+  tipo_conta    Int
+  empresa_id    Int
+  titular       Pessoa   @relation(fields: [titular_id], references: [id])
+  banco         Banco    @relation(fields: [banco_id], references: [id])
+  empresa       Empresa  @relation(fields: [empresa_id], references: [id])
+
+  @@map("conta_financeira")
+}
+
+model CondicaoPagamento {
+  id                 Int         @id @default(autoincrement())
+  nome               String      @db.VarChar(100)
+  dias_intervalo     Int
+  quantidade_parcela Int
+  empresa_id         Int
+  empresa            Empresa     @relation(fields: [empresa_id], references: [id])
+  financeiros        Financeiro[]
+
+  @@map("condicao_pagamento")
+}
+
+model FormaPagamento {
+  id           Int         @id @default(autoincrement())
+  descricao    String      @unique
+  empresa_id   Int
+  empresa      Empresa     @relation(fields: [empresa_id], references: [id])
+  financeiros  Financeiro[]
+
+  @@map("forma_pagamento")
+}
+
+model Categoria {
+  id           Int         @id @default(autoincrement())
+  nome         String      @db.VarChar(50)
+  tipo         Int
+  empresa_id   Int
+  empresa      Empresa     @relation(fields: [empresa_id], references: [id])
+  financeiros  Financeiro[]
+
+  @@map("categoria")
+}
+
+model Financeiro {
+  id                   Int               @id @default(autoincrement())
+  descricao            String
+  fornecedor_id        Int
+  valor_bruto          Decimal           @db.Decimal(10, 2)
+  valor_pago           Decimal           @db.Decimal(10, 2)
+  data_vencimento      DateTime          @db.Date
+  data_pagamento       DateTime?         @db.Date
+  categoria_id         Int
+  observacao           String?
+  forma_pagamento_id   Int?              
+  condicao_pagamento_id Int?             
+  data_criacao         DateTime          @default(now())
+  data_atualizacao     DateTime          @default(now()) @updatedAt
+  empresa_id           Int
+  forma_pagamento      FormaPagamento?   @relation(fields: [forma_pagamento_id], references: [id])
+  condicao_pagamento   CondicaoPagamento? @relation(fields: [condicao_pagamento_id], references: [id])
+  fornecedor           Pessoa            @relation(fields: [fornecedor_id], references: [id])
+  categoria            Categoria         @relation(fields: [categoria_id], references: [id])
+  empresa              Empresa           @relation(fields: [empresa_id], references: [id])
+
+  @@map("financeiro")
+}
+
+model Banco {
+  id                 Int               @id @default(autoincrement())
+  nome               String            @db.VarChar(100)
+  empresa_id         Int
+  empresa            Empresa           @relation(fields: [empresa_id], references: [id])
+  contas_financeiras ContaFinanceira[]
+
+  @@map("banco")
+}
+
+model Pessoa {
+  id                Int               @id @default(autoincrement())
+  nome              String            @db.VarChar(100)
+  fantasia          String?           @db.VarChar(100)
+  tipo              String            @db.Char(1)
+  cpf_cnpj          String?           @unique @db.VarChar(18)
+  rg_ie             String?           @db.VarChar(20)
+  celular           String?           @db.VarChar(20)
+  email             String?           @db.VarChar(255)
+  data_cadastro     DateTime          @default(now())
+  data_atualizacao  DateTime          @default(now()) @updatedAt
+  ativo             Boolean           @default(true)
+  tipo_granjeiro    Boolean           @default(false)
+  tipo_motorista    Boolean           @default(false)
+  tipo_fornecedor   Boolean           @default(false)
+  empresa_id        Int
+  empresa           Empresa           @relation(fields: [empresa_id], references: [id])
+  contas_financeiras ContaFinanceira[]
+  financeiros       Financeiro[]
+  enderecos EnderecoPessoa[]
+
+  @@map("pessoa")
+}
+
+model Pais {
+  id       Int       @id @default(autoincrement())
+  nome     String
+  empresa_id Int
+  empresa  Empresa   @relation(fields: [empresa_id], references: [id])
+  estados  Estado[]
+
+  @@map("pais")
+}
+
+model Estado {
+  id        Int        @id @default(autoincrement())
+  nome      String
+  sigla     String     @db.VarChar(2)
+  paisId    Int
+  empresa_id Int
+  pais      Pais       @relation(fields: [paisId], references: [id])
+  empresa   Empresa    @relation(fields: [empresa_id], references: [id])
+  municipios Municipio[]
+
+  @@map("estado")
+}
+
+model Municipio {
+  id          Int        @id @default(autoincrement())
+  nome        String
+  estadoId    Int
+  empresa_id  Int
+  estado      Estado     @relation(fields: [estadoId], references: [id])
+  empresa     Empresa    @relation(fields: [empresa_id], references: [id])
+  bairros     Bairro[]
+
+  @@map("municipio")
+}
+
+model Bairro {
+  id          Int        @id @default(autoincrement())
+  nome        String
+  municipioId Int
+  empresa_id  Int
+  municipio   Municipio  @relation(fields: [municipioId], references: [id])
+  empresa     Empresa    @relation(fields: [empresa_id], references: [id])
+  logradouros Logradouro[]
+
+  @@map("bairro")
+}
+
+model Logradouro {
+  id          Int        @id @default(autoincrement())
+  nome        String
+  bairroId    Int
+  empresa_id  Int
+  bairro      Bairro     @relation(fields: [bairroId], references: [id])
+  empresa     Empresa    @relation(fields: [empresa_id], references: [id])
+  enderecos   Endereco[]
+
+  @@map("logradouro")
+}
+
+model Endereco {
+  id             Int          @id @default(autoincrement())      
+  logradouroId   Int
+  numero         String
+  complemento    String?
+  cep            String?      @db.VarChar(10)
+  empresa_id     Int
+  logradouro     Logradouro   @relation(fields: [logradouroId], references: [id])
+  empresa        Empresa      @relation(fields: [empresa_id], references: [id])
+  enderecoPessoas EnderecoPessoa[]
+
+  @@map("endereco")
+}
+
+model EnderecoPessoa {
+  pessoaId   Int
+  enderecoId Int
+  empresa_id Int
+
+  pessoa     Pessoa     @relation(fields: [pessoaId], references: [id], onDelete: Cascade)
+  endereco   Endereco   @relation(fields: [enderecoId], references: [id], onDelete: Cascade)
+  empresa    Empresa    @relation(fields: [empresa_id], references: [id])
+
+  @@id([pessoaId, enderecoId])
+  @@map("endereco_pessoa")
+}
