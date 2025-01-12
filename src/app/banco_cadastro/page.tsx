@@ -38,11 +38,11 @@ const BancoCadastro: React.FC = () => {
                 <div className="w-full px-4 bg-green-800 h-2/5">
                     <div className="flex flex-row gap-4">
                         <div className="flex flex-row items-center justify-start cursor-pointer">
-                            <FontAwesomeIcon icon={faArrowLeft} size="sm" className="text-white w-9" />
+                            <FontAwesomeIcon icon={faArrowLeft} className="text-white w-9" />
                             <p>Voltar</p>
                         </div>
                         <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleSubmit}>
-                            <FontAwesomeIcon icon={faFloppyDisk} size="sm" className="text-green-600 w-9" />
+                            <FontAwesomeIcon icon={faFloppyDisk} className="text-green-600 w-9" />
                             <p>Salvar</p>
                         </div>
                     </div>

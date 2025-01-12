@@ -12,10 +12,13 @@ const ContasPagarCadastro: React.FC = () => {
         fornecedorId: '',
         valorBruto: '',
         valorPago: '',
-        dataVenciomento: '',
+        dataVencimento: '',
         dataPagamento: '',
         categoriaId: '',
         observacao: '',
+        formaPagamentoId: '',
+        condicaoPagamentoId: '',
+        // empresaId: '',
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,29 +31,48 @@ const ContasPagarCadastro: React.FC = () => {
         console.log('Dados do formulário:', formData)
 
         try {
-            const response = await fetch('/api/contas-pagar', {
+            const response = await fetch('/api/contas_pagar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    descricao: formData.descricao,
+                    fornecedorId: Number(formData.fornecedorId),
+                    valorBruto: Number(formData.valorBruto),
+                    valorPago: formData.valorPago ? Number(formData.valorPago) : 0,
+                    categoriaId: Number(formData.categoriaId),
+                    datevencimento: formData.dataVencimento,
+                    // datepagamento: formData.dataPagamento,
+                    categoriaid: Number(formData.categoriaId),
+                    observacao: formData.observacao || null,
+                    formapagamentoId: formData.formaPagamentoId ? Number(formData.formaPagamentoId) : null,
+                    condicaopagamentoId: formData.condicaoPagamentoId ? Number(formData.condicaoPagamentoId) : null,
+                    // empresaId: Number(formData.empresaId),
+                }),
             })
 
             if (!response.ok) {
                 const errorData = await response.json()
-                alert(errorData.error || 'Erro ao salvar conta a pagar')
+                alert(errorData.error || 'Erro ao salvar a conta a pagar.')
                 return
             }
 
-            const data = await response.json()
-            alert(`Conta a pagar criada com sucesso!`)
+            // const data = await response.json()
+            alert('Conta a pagar criada com sucesso!')
+
+            // Resetando o formulário
             setFormData({
                 descricao: '',
                 fornecedorId: '',
                 valorBruto: '',
                 valorPago: '',
-                dataVenciomento: '',
+                dataVencimento: '',
                 dataPagamento: '',
                 categoriaId: '',
                 observacao: '',
+                formaPagamentoId: '',
+                condicaoPagamentoId: '',
+                // empresaId: '',
             })
         } catch (error) {
             console.error('Erro no envio:', error)
@@ -73,11 +95,11 @@ const ContasPagarCadastro: React.FC = () => {
                 <div className="w-full px-4 bg-green-800 h-2/5">
                     <div className="flex flex-row gap-4">
                         <div className="flex flex-row items-center justify-start cursor-pointer">
-                            <FontAwesomeIcon icon={faArrowLeft} size="sm" className="text-white w-9" />
+                            <FontAwesomeIcon icon={faArrowLeft} className="text-white w-9" />
                             <p>Voltar</p>
                         </div>
                         <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleSubmit}>
-                            <FontAwesomeIcon icon={faFloppyDisk} size="sm" className="text-green-600 w-9" />
+                            <FontAwesomeIcon icon={faFloppyDisk} className="text-green-600 w-9" />
                             <p>Salvar</p>
                         </div>
                     </div>

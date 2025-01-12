@@ -3,8 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamationTriangle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import Header from '@/components/header'
 
 interface DataRow {
@@ -51,13 +49,22 @@ const ContasPagarConsulta: React.FC = () => {
     }, [])
 
     const formatDate = (dateString: string) => {
+        if (!dateString) return '' // Retorna vazio se a data for nula ou indefinida.
         const date = new Date(dateString)
+        if (isNaN(date.getTime())) return '' // Verifica se a data é inválida.
         const options: Intl.DateTimeFormatOptions = {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
         }
         return date.toLocaleDateString('pt-BR', options)
+    }
+
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(value)
     }
 
     const sortedData = [...data].sort((a, b) => {
@@ -91,20 +98,20 @@ const ContasPagarConsulta: React.FC = () => {
         }
     }
 
-    const getStatusIcon = (situacao: string) => {
-        switch (situacao) {
-            case 'Pago':
-                return <FontAwesomeIcon icon={faCheck} className="text-green-500" />
-            case 'Parcialmente Pago':
-                return <FontAwesomeIcon icon={faCheck} className="text-blue-500" />
-            case 'Pendente':
-                return <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500" />
-            case 'Atrasado':
-                return <FontAwesomeIcon icon={faExclamationCircle} className="text-red-500" />
-            default:
-                return null
-        }
-    }
+    // const getStatusIcon = (situacao: string) => {
+    //     switch (situacao) {
+    //         case 'Pago':
+    //             return <FontAwesomeIcon icon={faCheck} className="text-green-500" />
+    //         case 'Parcialmente Pago':
+    //             return <FontAwesomeIcon icon={faCheck} className="text-blue-500" />
+    //         case 'Pendente':
+    //             return <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500" />
+    //         case 'Atrasado':
+    //             return <FontAwesomeIcon icon={faExclamationCircle} className="text-red-500" />
+    //         default:
+    //             return null
+    //     }
+    // }
 
     return (
         <div className="h-screen w-full">
@@ -199,8 +206,8 @@ const ContasPagarConsulta: React.FC = () => {
                                     <TableCell className="text-left">{row.categoria.nome}</TableCell>
                                     <TableCell className="text-center">{formatDate(row.data_vencimento)}</TableCell>
                                     <TableCell className="text-center">{formatDate(row.data_pagamento)}</TableCell>
-                                    <TableCell className="text-right">{row.valor_bruto}</TableCell>
-                                    <TableCell className="text-right">{row.valor_pago}</TableCell>
+                                    <TableCell className="text-right">{formatCurrency(row.valor_bruto)}</TableCell>
+                                    <TableCell className="text-right">{formatCurrency(row.valor_pago)}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

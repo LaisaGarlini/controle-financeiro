@@ -84,11 +84,11 @@ export default function Header({ isConsultaScreen, title, userName, companyName,
                 <div className="w-full px-4 bg-green-800 h-2/5">
                     <div className="flex flex-row gap-4">
                         <div className="flex flex-row items-center justify-start cursor-pointer" onClick={() => router.back()}>
-                            <FontAwesomeIcon icon={faArrowLeft} size="sm" className="text-white w-9" />
+                            <FontAwesomeIcon icon={faArrowLeft} className="text-white w-9" />
                             <p>Voltar</p>
                         </div>
                         <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleNewClick}>
-                            <FontAwesomeIcon icon={faFileCirclePlus} size="sm" className="text-blue-600 w-9" />
+                            <FontAwesomeIcon icon={faFileCirclePlus} className="text-blue-600 w-9" />
                             <p>Novo</p>
                         </div>
                         <div
@@ -97,7 +97,7 @@ export default function Header({ isConsultaScreen, title, userName, companyName,
                             }`}
                             onClick={handleDelete}
                         >
-                            <FontAwesomeIcon icon={faTrashCan} size="sm" className="text-red-600 w-9" />
+                            <FontAwesomeIcon icon={faTrashCan} className="text-red-600 w-9" />
                             <p>Excluir</p>
                         </div>
                     </div>

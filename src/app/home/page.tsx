@@ -30,7 +30,7 @@ interface ItemProps {
 const Item: React.FC<ItemProps> = ({ icone, titulo, cor, rota }) => (
     <Link href={rota}>
         <div className="w-1/4 min-w-[120px] h-full min-h-[120px] flex flex-col justify-around items-center p-4 hover:bg-[#f4f4f4] hover:scale-95 transition duration-300 ease-in-out">
-            <FontAwesomeIcon key={titulo} icon={icone} size="2x" className={`${cor} w-16`} />
+            <FontAwesomeIcon key={titulo} icon={icone} className={`${cor} w-12 h-12`} />
             <p className="text-base text-center">{titulo}</p>
         </div>
     </Link>
