@@ -1,21 +1,28 @@
 'use client'
 
 import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import Header, { HeaderButton } from '@/components/header'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+
+interface FormData {
+    id: string
+    nome: string
+    tipo: string
+    empresaId: number
+}
 
 const CategoriaCadastro: React.FC = () => {
-    const [formData, setFormData] = useState({
+    const router = useRouter()
+    const [formData, setFormData] = useState<FormData>({
         id: '',
         nome: '',
         tipo: '',
         empresaId: 1,
     })
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
-    const [successMessage, setSuccessMessage] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -24,12 +31,9 @@ const CategoriaCadastro: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setIsSubmitting(true)
-        setErrorMessage('')
-        setSuccessMessage('')
+        setLoading(true)
 
         try {
-            console.log('Dados do formulário:', formData)
             const response = await fetch('/api/categoria', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -41,72 +45,70 @@ const CategoriaCadastro: React.FC = () => {
 
             if (!response.ok) {
                 const errorData = await response.json()
-                setErrorMessage(errorData.error || 'Erro ao salvar categoria')
-                return
+                throw new Error(errorData.error || 'Erro ao salvar categoria')
             }
 
             const data = await response.json()
-            setSuccessMessage(`Categoria "${data.nome}" criada com sucesso!`)
-            setFormData({
-                id: '',
-                nome: '',
-                tipo: '',
-                empresaId: 1,
-            })
+            toast.success(`Categoria "${data.nome}" criada com sucesso!`)
+            router.push('/categoria_consulta')
         } catch (error) {
-            console.error('Erro no envio:', error)
-            setErrorMessage('Erro inesperado. Tente novamente mais tarde.')
+            const errorMessage = error instanceof Error ? error.message : 'Erro inesperado. Tente novamente mais tarde.'
+            toast.error(errorMessage)
         } finally {
-            setIsSubmitting(false)
+            setLoading(false)
         }
     }
 
     return (
         <div className="h-screen w-full">
-            <header className="w-full h-[9%] bg-green-900 text-white flex flex-col">
-                <div className="flex justify-between items-center px-4 h-3/5">
-                    <div>
-                        <h1 className="font-semibold text-2xl">Cadastro de Categorias</h1>
-                    </div>
-                    <div className="flex gap-4">
-                        <h1>Domingos</h1>
-                        <h1>DELL Transportes</h1>
-                    </div>
-                </div>
-                <div className="w-full px-4 bg-green-800 h-2/5">
-                    <div className="flex flex-row gap-4">
-                        <div className="flex flex-row items-center justify-start cursor-pointer">
-                            <FontAwesomeIcon icon={faArrowLeft} className="text-white w-9" />
-                            <p>Voltar</p>
-                        </div>
-                        <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleSubmit}>
-                            <FontAwesomeIcon icon={faFloppyDisk} className="text-green-600 w-9" />
-                            <p>Salvar</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <Header
+                isConsultaScreen={true}
+                title="Cadastro de Categorias"
+                userName="Usuário"
+                companyName="Empresa"
+                routeConfig={{
+                    path: 'categoria',
+                    deleteMessage: 'Tem certeza que deseja excluir as categorias selecionadas?',
+                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.NEW, HeaderButton.SAVE],
+                }}
+            />
             <main className="w-full h-[91%] flex flex-col items-start gap-8 p-6 bg-gray-100 overflow-auto">
-                <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
-                    {Object.entries(formData).map(([key, value]) => (
-                        <div key={key} className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor={key} className="text-right font-medium">
-                                {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}:
-                            </Label>
-                            <Input
-                                id={key}
-                                name={key}
-                                value={value}
-                                onChange={handleChange}
-                                className="col-span-2"
-                                disabled={key === 'empresaId' || key === 'id'}
-                            />
-                        </div>
-                    ))}
+                <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl w-full">
+                    <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="id" className="text-right font-medium">
+                            Código:
+                        </Label>
+                        <Input id="id" name="id" value={formData.id} onChange={handleChange} className="col-span-2" disabled={true} />
+                    </div>
+                    <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="nome" className="text-right font-medium">
+                            Nome:
+                        </Label>
+                        <Input
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
+                            onChange={handleChange}
+                            className="col-span-2"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
+                    <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="tipo" className="text-right font-medium">
+                            Tipo:
+                        </Label>
+                        <Input
+                            id="tipo"
+                            name="tipo"
+                            value={formData.tipo}
+                            onChange={handleChange}
+                            className="col-span-2"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
                 </form>
-
-                {successMessage && <p className="text-green-700 font-semibold">{successMessage}</p>}
-                {errorMessage && <p className="text-red-700 font-semibold">{errorMessage}</p>}
             </main>
         </div>
     )

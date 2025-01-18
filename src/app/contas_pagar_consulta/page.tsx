@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
-import Header from '@/components/header'
+import Header, { HeaderButton } from '@/components/header'
 
 interface DataRow {
     id: number
@@ -124,6 +124,11 @@ const ContasPagarConsulta: React.FC = () => {
                 selectedIds={selectedIds}
                 data={data}
                 setData={setData}
+                routeConfig={{
+                    path: 'contas_pagar',
+                    deleteMessage: 'Tem certeza que deseja excluir as contas a pagar selecionadas?',
+                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.NEW, HeaderButton.DELETE],
+                }}
             />
             <main className="w-full h-[91%] flex flex-col gap-8 p-3">
                 {loading ? (
