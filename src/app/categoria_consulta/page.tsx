@@ -21,7 +21,7 @@ const ContasPagarConsulta: React.FC = () => {
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
-    const router = useRouter()
+    // const router = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {

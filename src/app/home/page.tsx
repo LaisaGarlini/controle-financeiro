@@ -16,6 +16,7 @@ import {
     faCalendarDay,
     faMapLocationDot,
     faList,
+    faCloudArrowUp,
 } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import Header from '../../components/header'
@@ -60,7 +61,7 @@ const Home: React.FC = () => {
             titulo: 'Fretes',
             itens: [
                 { icone: faTruck, titulo: "CTE's", cor: 'text-green-600', rota: '/cte_consulta' },
-                { icone: faPiggyBank, titulo: 'Granjeiros', cor: 'text-blue-600', rota: '/' },
+                { icone: faCloudArrowUp, titulo: "Importar CTE's", cor: 'text-blue-600', rota: '/' },
             ],
         },
         {
@@ -68,7 +69,6 @@ const Home: React.FC = () => {
             itens: [
                 { icone: faMoneyBill, titulo: 'Contas a receber', cor: 'text-green-600', rota: '/' },
                 { icone: faMoneyBill, titulo: 'Contas a pagar', cor: 'text-red-600', rota: '/contas_pagar_consulta' },
-                { icone: faUserGear, titulo: 'Fornecedores', cor: 'text-blue-600', rota: '/' },
             ],
         },
         {
@@ -82,7 +82,7 @@ const Home: React.FC = () => {
             titulo: 'Dashboard',
             itens: [
                 { icone: faChartSimple, titulo: 'Geral', cor: 'text-green-600', rota: '/' },
-                { icone: faChartPie, titulo: 'Receita X Despesa', cor: 'text-red-600', rota: '/contas_pagar_consulta' },
+                { icone: faChartPie, titulo: 'Receita X Despesa', cor: 'text-red-600', rota: '/dashboard_receita_despesa' },
                 { icone: faChartBar, titulo: "CTE's", cor: 'text-blue-600', rota: '/' },
             ],
         },
