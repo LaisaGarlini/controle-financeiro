@@ -42,7 +42,7 @@ interface ModuloProps {
 }
 
 const Modulo: React.FC<ModuloProps> = ({ titulo, itens }) => (
-    <div className="w-1/3 min-w-[200px] h-[35%] p-2 bg-[#fafafa] hover:scale-95 transition duration-300 ease-in-out mt-3 flex flex-col">
+    <div className="w-auto min-w-[200px] h-[35%] p-2 bg-[#fafafa] hover:scale-95 transition duration-300 ease-in-out mt-3 flex flex-col">
         <div className="w-full h-[10%]">
             <h1 className="text-xl">{titulo}</h1>
         </div>
