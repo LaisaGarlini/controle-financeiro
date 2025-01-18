@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import Header from '../../components/header'
 
 interface DataRow {
@@ -21,7 +21,7 @@ const ContasPagarConsulta: React.FC = () => {
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
-    const router = useRouter()
+    // const router = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {

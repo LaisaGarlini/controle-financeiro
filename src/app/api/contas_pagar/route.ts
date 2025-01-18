@@ -21,6 +21,7 @@ export async function GET(request: Request) {
                 },
             },
         })
+        console.log('Contas a pagar:', data)
         return new Response(JSON.stringify(data), {
             headers: { 'Content-Type': 'application/json' },
         })
