@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
-import Header from '@/components/header'
+import Header, { BotoesCabecalho } from '@/components/header'
+import { formatarDataHora, formatarMoeda } from '@/lib/utils'
 
 interface DataRow {
     id: number
@@ -31,9 +32,8 @@ const CTEConsulta: React.FC = () => {
                     throw new Error('Erro ao buscar dados da API')
                 }
                 const result = await response.json()
-                setData(result)
-                console.log(result)
-            } catch (err: any) {
+                setData(result as DataRow[])
+            } catch (err: string | unknown) {
                 setError(err.message || 'Erro desconhecido')
             } finally {
                 setLoading(false)
@@ -42,28 +42,6 @@ const CTEConsulta: React.FC = () => {
 
         fetchData()
     }, [])
-
-    const formatDateTime = (dateString: string) => {
-        if (!dateString) return ''
-        const date = new Date(dateString)
-        if (isNaN(date.getTime())) return ''
-        const options: Intl.DateTimeFormatOptions = {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-        }
-        return date.toLocaleString('pt-BR', options).replace(',', '')
-    }
-
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-        }).format(value)
-    }
 
     const sortedData = [...data].sort((a, b) => {
         if (sortColumn === 'municipio_inicio' || sortColumn === 'municipio_fim' || sortColumn === 'destinatario') {
@@ -104,14 +82,16 @@ const CTEConsulta: React.FC = () => {
     return (
         <div className="h-screen w-full">
             <Header
-                isConsultaScreen={true}
-                title="Consulta de CTE's"
-                userName="Domingos"
-                companyName="DELL Transportes"
-                novo="cte_cadastro"
-                selectedIds={selectedIds}
-                data={data}
-                setData={setData}
+                TelaConsulta={true}
+                titulo="CTE's"
+                novo="/cte_cadastro"
+                idsSelecionados={selectedIds}
+                dados={data}
+                setDados={setData}
+                configuracoesRota={{
+                    caminho: 'cte',
+                    botoes: [BotoesCabecalho.VOLTAR, BotoesCabecalho.NOVO, BotoesCabecalho.EXCLUIR],
+                }}
             />
             <main className="w-full h-[91%] flex flex-col gap-8 p-3">
                 {loading ? (
@@ -157,8 +137,8 @@ const CTEConsulta: React.FC = () => {
                                     <TableCell>
                                         <Checkbox checked={selectedIds.has(row.id)} onCheckedChange={() => toggleSelect(row.id)} />
                                     </TableCell>
-                                    <TableCell className="text-center">{formatDateTime(row.data_emissao)}</TableCell>
-                                    <TableCell className="text-center">{formatCurrency(row.valor)}</TableCell>
+                                    <TableCell className="text-center">{formatarDataHora(row.data_emissao)}</TableCell>
+                                    <TableCell className="text-center">{formatarMoeda(row.valor)}</TableCell>
                                     <TableCell className="text-left">{row.municipio_inicio.nome}</TableCell>
                                     <TableCell className="text-left">{row.municipio_fim.nome}</TableCell>
                                     <TableCell className="text-left">{row.destinatario.nome}</TableCell>

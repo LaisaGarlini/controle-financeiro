@@ -1,76 +1,56 @@
 'use client'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faArrowLeft, faFileCirclePlus, faTrashCan, faHome, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faArrowLeft, faFileCirclePlus, faTrashCan, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-// Enum para os botões disponíveis
-export enum HeaderButton {
-    BACK = 'back',
-    HOME = 'home',
-    NEW = 'new',
-    DELETE = 'delete',
-    SAVE = 'save',
+export enum BotoesCabecalho {
+    VOLTAR = 'voltar',
+    NOVO = 'novo',
+    EXCLUIR = 'excluir',
+    SALVAR = 'salvar',
+    EDITAR = 'editar',
 }
 
-interface DataItem {
+interface Registros {
     id: number
     [key: string]: string | number | boolean
 }
 
-interface SaveConfig {
-    data: unknown // dados a serem salvos
-    successMessage?: string
+interface configuracoesSalvar {
+    dados: unknown
     successCallback?: () => void
-    redirectTo?: string
+    redirecionarPara?: string
 }
 
-interface RouteConfig {
-    path: string
-    deleteMessage?: string
-    buttons?: HeaderButton[]
-    saveConfig?: SaveConfig // Nova configuração para salvar
+interface configuracoesRota {
+    caminho: string
+    botoes?: BotoesCabecalho[]
+    configuracoesSalvar?: configuracoesSalvar
 }
 
 interface HeaderProps {
-    isConsultaScreen: boolean
-    title: string
-    userName: string
-    companyName: string
+    TelaConsulta: boolean
+    titulo: string
     novo?: string
-    selectedIds?: Set<number>
-    data?: DataItem[]
-    setData?: React.Dispatch<React.SetStateAction<DataItem[]>>
-    routeConfig?: RouteConfig
+    idsSelecionados?: Set<number>
+    dados?: Registros[]
+    setDados?: React.Dispatch<React.SetStateAction<Registros[]>>
+    configuracoesRota?: configuracoesRota
 }
 
-export default function Header({
-    isConsultaScreen,
-    title,
-    userName,
-    companyName,
-    novo,
-    selectedIds,
-    data,
-    setData,
-    routeConfig,
-}: HeaderProps) {
+export default function Header({ TelaConsulta, titulo, novo, idsSelecionados, dados, setDados, configuracoesRota }: HeaderProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 
-    // Função auxiliar para verificar se um botão deve ser exibido
-    const shouldShowButton = (button: HeaderButton) => {
-        return routeConfig?.buttons?.includes(button)
+    const deveMostrarBotao = (button: BotoesCabecalho) => {
+        return configuracoesRota?.botoes?.includes(button)
     }
 
     const handleBack = () => {
         router.back()
-    }
-
-    const handleHome = () => {
-        router.push('/')
     }
 
     const handleNewClick = () => {
@@ -82,35 +62,34 @@ export default function Header({
     }
 
     const handleDelete = async () => {
-        if (!routeConfig?.path) {
+        if (!configuracoesRota?.caminho) {
             console.warn('Configuração de rota não fornecida')
             return
         }
 
-        if (!selectedIds?.size) {
+        if (!idsSelecionados?.size) {
             toast.error('Selecione ao menos um item para excluir.')
             return
         }
 
-        if (!data || !setData) {
+        if (!dados || !setDados) {
             toast.error('Dados não disponíveis.')
             return
         }
 
-        const confirmMessage = routeConfig.deleteMessage || 'Você tem certeza que deseja excluir os itens selecionados?'
-        const confirmDelete = window.confirm(confirmMessage)
+        const confirmDelete = window.confirm('Você tem certeza que deseja excluir os itens selecionados?')
 
         if (!confirmDelete) return
 
         setLoading(true)
 
         try {
-            const response = await fetch(`/api/${routeConfig.path}`, {
+            const response = await fetch(`/api/${configuracoesRota.caminho}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ids: Array.from(selectedIds) }),
+                body: JSON.stringify({ ids: Array.from(idsSelecionados) }),
             })
 
             if (!response.ok) {
@@ -118,8 +97,8 @@ export default function Header({
                 throw new Error(errorData.error || 'Erro ao excluir os itens.')
             }
 
-            const remainingData = data.filter((item) => !selectedIds.has(item.id))
-            setData(remainingData)
+            const remainingData = dados.filter((item) => !idsSelecionados.has(item.id))
+            setDados(remainingData)
             toast.success('Itens excluídos com sucesso.')
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao excluir os itens.'
@@ -130,21 +109,21 @@ export default function Header({
     }
 
     const handleSave = async () => {
-        if (!routeConfig?.path || !routeConfig.saveConfig) {
+        if (!configuracoesRota?.caminho || !configuracoesRota.configuracoesSalvar) {
             console.warn('Configuração de salvamento não fornecida')
             return
         }
 
-        const { data, successMessage, successCallback, redirectTo } = routeConfig.saveConfig
+        const { dados, successCallback, redirecionarPara } = configuracoesRota.configuracoesSalvar
 
         setLoading(true)
         try {
-            const response = await fetch(`/api/${routeConfig.path}`, {
+            const response = await fetch(`/api/${configuracoesRota.caminho}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(dados),
             })
 
             if (!response.ok) {
@@ -152,14 +131,14 @@ export default function Header({
                 throw new Error(errorData.error || 'Erro ao salvar')
             }
 
-            toast.success(successMessage || 'Dados salvos com sucesso!')
+            toast.success('Dados salvos com sucesso!')
 
             if (successCallback) {
                 successCallback()
             }
 
-            if (redirectTo) {
-                router.push(redirectTo)
+            if (redirecionarPara) {
+                router.push(redirecionarPara)
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Erro ao salvar os dados'
@@ -171,42 +150,34 @@ export default function Header({
 
     return (
         <header
-            className={`w-full h-[9%] bg-green-900 text-white ${
-                isConsultaScreen ? 'flex flex-col' : 'flex justify-between items-center px-4'
-            }`}
+            className={`w-full h-[9%] bg-green-900 text-white ${TelaConsulta ? 'flex flex-col' : 'flex justify-between items-center px-4'}`}
         >
             <div className="flex justify-between items-center px-4 h-3/5 w-full">
                 <div>
-                    <h1 className="font-semibold text-2xl">{title}</h1>
+                    <h1 className="font-semibold text-2xl">{titulo}</h1>
                 </div>
                 <div className="flex gap-4 items-center">
                     <FontAwesomeIcon icon={faBell} className="text-white h-5 w-5" />
-                    <h1>{userName}</h1>
-                    <h1>{companyName}</h1>
+                    <h1>Domingos</h1>
+                    <h1>DELL Transportes</h1>
                 </div>
             </div>
-            {isConsultaScreen && (
+            {TelaConsulta && (
                 <div className="w-full px-4 bg-green-800 h-2/5">
                     <div className="flex flex-row gap-4">
-                        {shouldShowButton(HeaderButton.BACK) && (
+                        {deveMostrarBotao(BotoesCabecalho.VOLTAR) && (
                             <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleBack}>
                                 <FontAwesomeIcon icon={faArrowLeft} className="text-white w-9" />
                                 <p>Voltar</p>
                             </div>
                         )}
-                        {shouldShowButton(HeaderButton.HOME) && (
-                            <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleHome}>
-                                <FontAwesomeIcon icon={faHome} className="text-white w-9" />
-                                <p>Home</p>
-                            </div>
-                        )}
-                        {shouldShowButton(HeaderButton.NEW) && novo && (
+                        {deveMostrarBotao(BotoesCabecalho.NOVO) && novo && (
                             <div className="flex flex-row items-center justify-start cursor-pointer" onClick={handleNewClick}>
                                 <FontAwesomeIcon icon={faFileCirclePlus} className="text-blue-600 w-9" />
                                 <p>Novo</p>
                             </div>
                         )}
-                        {shouldShowButton(HeaderButton.DELETE) && routeConfig?.path && (
+                        {deveMostrarBotao(BotoesCabecalho.EXCLUIR) && configuracoesRota?.caminho && (
                             <div
                                 className={`flex flex-row items-center justify-start cursor-pointer ${
                                     loading ? 'opacity-50 pointer-events-none' : ''
@@ -217,7 +188,7 @@ export default function Header({
                                 <p>Excluir</p>
                             </div>
                         )}
-                        {shouldShowButton(HeaderButton.SAVE) && (
+                        {deveMostrarBotao(BotoesCabecalho.SALVAR) && (
                             <div
                                 className={`flex flex-row items-center justify-start cursor-pointer ${
                                     loading ? 'opacity-50 pointer-events-none' : ''

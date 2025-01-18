@@ -21,12 +21,10 @@ export async function GET(request: Request) {
                 },
             },
         })
-        console.log('Contas a pagar:', data)
         return new Response(JSON.stringify(data), {
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error(error)
         return new Response(JSON.stringify({ error: 'Erro ao buscar dados' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -57,9 +55,6 @@ export async function POST(request: Request) {
             condicaoPagamentoId,
         } = body
 
-        console.log('Dados recebidos:', body)
-
-        // Validação de campos obrigatórios
         if (!descricao || !fornecedorId || !dataVencimento || !valorBruto || !categoriaId) {
             return new Response(JSON.stringify({ error: 'Campos obrigatórios não preenchidos.' }), {
                 status: 400,
@@ -67,7 +62,6 @@ export async function POST(request: Request) {
             })
         }
 
-        // Criar registro na tabela `financeiro`
         try {
             const novoFinanceiro = await prisma.financeiro.create({
                 data: {
@@ -81,7 +75,6 @@ export async function POST(request: Request) {
                     observacao: observacao || null,
                     forma_pagamento_id: formaPagamentoId ? Number(formaPagamentoId) : null,
                     condicao_pagamento_id: condicaoPagamentoId ? Number(condicaoPagamentoId) : null,
-                    // empresa_id: Number(empresaId),
                     empresa_id: 1,
                 },
             })
@@ -91,7 +84,6 @@ export async function POST(request: Request) {
                 headers: { 'Content-Type': 'application/json' },
             })
         } catch (error) {
-            console.error('Erro no backend:', (error as Error).message)
             return new Response(JSON.stringify({ error: 'Erro ao inserir dados no banco.' }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },
@@ -122,14 +114,11 @@ export async function DELETE(request: Request) {
             },
         })
 
-        console.log('Contas a pagar excluídas:', deleted)
-
         return new Response(JSON.stringify({ message: 'Contas a pagar excluídas com sucesso', count: deleted.count }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error('Erro ao excluir contas a pagar:', (error as Error).message)
         return new Response(JSON.stringify({ error: 'Erro ao excluir contas a pagar' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },

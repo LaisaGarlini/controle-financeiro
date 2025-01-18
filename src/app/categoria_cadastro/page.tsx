@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import Header, { HeaderButton } from '@/components/header'
+import Header, { BotoesCabecalho } from '@/components/header'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -62,14 +62,18 @@ const CategoriaCadastro: React.FC = () => {
     return (
         <div className="h-screen w-full">
             <Header
-                isConsultaScreen={true}
-                title="Cadastro de Categorias"
-                userName="Usuário"
-                companyName="Empresa"
-                routeConfig={{
-                    path: 'categoria',
-                    deleteMessage: 'Tem certeza que deseja excluir as categorias selecionadas?',
-                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.NEW, HeaderButton.SAVE],
+                TelaConsulta={true}
+                titulo="Cadastro de Categorias"
+                configuracoesRota={{
+                    caminho: 'categoria',
+                    botoes: [BotoesCabecalho.VOLTAR, BotoesCabecalho.SALVAR],
+                    configuracoesSalvar: {
+                        dados: formData,
+                        redirecionarPara: '/categoria_consulta',
+                        successCallback: () => {
+                            setFormData({ id: '', nome: '', tipo: '', empresaId: 1 })
+                        },
+                    },
                 }}
             />
             <main className="w-full h-[91%] flex flex-col items-start gap-8 p-6 bg-gray-100 overflow-auto">

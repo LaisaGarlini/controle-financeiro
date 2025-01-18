@@ -102,7 +102,7 @@ const Home: React.FC = () => {
 
     return (
         <div className="h-screen w-full">
-            <Header isConsultaScreen={false} title="Controle Financeiro" userName="Domingos" companyName="DELL Transportes" />
+            <Header TelaConsulta={false} titulo="Controle Financeiro" />
             <main className="w-full h-[91%] flex flex-wrap gap-4 p-3">
                 {Modulos.map((modulo, index) => (
                     <Modulo key={index} {...modulo} />

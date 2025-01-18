@@ -9,7 +9,6 @@ export async function GET() {
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error(error)
         return new Response(JSON.stringify({ error: 'Erro ao buscar dados' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -66,7 +65,6 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error(error)
         return new Response(JSON.stringify({ error: 'Erro ao cadastrar banco' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -101,7 +99,6 @@ export async function DELETE(request: Request) {
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error(error)
         return new Response(JSON.stringify({ error: 'Erro ao excluir bancos' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },

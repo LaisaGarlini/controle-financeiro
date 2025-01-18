@@ -9,7 +9,6 @@ export async function GET(request: Request) {
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error(error)
         return new Response(JSON.stringify({ error: 'Erro ao buscar dados' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -23,8 +22,6 @@ export async function POST(request: Request) {
     try {
         const body = await request.json()
         const { nome, tipo } = body
-
-        console.log('Dados recebidos:', body)
 
         if (!nome || !tipo) {
             return new Response(JSON.stringify({ error: 'Campos nome e tipo são obrigatórios' }), {
@@ -42,13 +39,11 @@ export async function POST(request: Request) {
                 },
             })
 
-            console.log('Categoria inserida:', newCategoria)
             return new Response(JSON.stringify(newCategoria), {
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
             })
         } catch (error) {
-            console.error('Erro no backend:', (error as Error).message)
             return new Response(JSON.stringify({ error: 'Erro ao inserir dados' }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },
@@ -79,14 +74,11 @@ export async function DELETE(request: Request) {
             },
         })
 
-        console.log('Categorias excluídas:', deleted)
-
         return new Response(JSON.stringify({ message: 'Categorias excluídas com sucesso', count: deleted.count }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error('Erro ao excluir categorias:', (error as Error).message)
         return new Response(JSON.stringify({ error: 'Erro ao excluir categorias' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },

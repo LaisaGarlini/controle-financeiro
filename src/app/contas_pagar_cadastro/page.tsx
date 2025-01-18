@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import Header, { HeaderButton } from '@/components/header'
+import Header, { BotoesCabecalho } from '@/components/header'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -94,15 +94,13 @@ const ContasPagarCadastro: React.FC = () => {
     return (
         <div className="h-screen w-full">
             <Header
-                isConsultaScreen={true}
-                title="Cadastro de Contas a Pagar"
-                userName="Usuário"
-                companyName="Empresa"
-                routeConfig={{
-                    path: 'contas_pagar',
-                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.SAVE],
-                    saveConfig: {
-                        data: {
+                TelaConsulta={true}
+                titulo="Cadastro de Contas a Pagar"
+                configuracoesRota={{
+                    caminho: 'contas_pagar',
+                    botoes: [BotoesCabecalho.VOLTAR, BotoesCabecalho.SALVAR],
+                    configuracoesSalvar: {
+                        dados: {
                             ...formData,
                             fornecedorId: Number(formData.fornecedorId),
                             valorBruto: Number(formData.valorBruto),
@@ -113,8 +111,7 @@ const ContasPagarCadastro: React.FC = () => {
                             formapagamentoId: formData.formaPagamentoId ? Number(formData.formaPagamentoId) : null,
                             condicaopagamentoId: formData.condicaoPagamentoId ? Number(formData.condicaoPagamentoId) : null,
                         },
-                        successMessage: 'Conta a pagar salva com sucesso!',
-                        redirectTo: '/contas_pagar_consulta',
+                        redirecionarPara: '/contas_pagar_consulta',
                     },
                 }}
             />

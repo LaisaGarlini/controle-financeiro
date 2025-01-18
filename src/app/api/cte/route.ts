@@ -31,7 +31,6 @@ export async function GET(request: Request) {
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error(error)
         return new Response(JSON.stringify({ error: 'Erro ao buscar dados' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -45,8 +44,6 @@ export async function POST(request: Request) {
     try {
         const body = await request.json()
         const { chave, data_emissao, valor, municipio_inicio_id, municipio_fim_id, emitente_id, remetente_id, destinatario_id } = body
-
-        console.log('Dados recebidos:', body)
 
         if (
             !chave ||
@@ -79,13 +76,11 @@ export async function POST(request: Request) {
                 },
             })
 
-            console.log('CTe inserida:', newCTE)
             return new Response(JSON.stringify(newCTE), {
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
             })
         } catch (error) {
-            console.error('Erro no backend:', (error as Error).message)
             return new Response(JSON.stringify({ error: 'Erro ao inserir dados' }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },
@@ -116,14 +111,11 @@ export async function DELETE(request: Request) {
             },
         })
 
-        console.log('CTE excluídas:', deleted)
-
         return new Response(JSON.stringify({ message: 'CTE excluídas com sucesso', count: deleted.count }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         })
     } catch (error) {
-        console.error('Erro ao excluir ctes:', (error as Error).message)
         return new Response(JSON.stringify({ error: 'Erro ao excluir ctes' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },

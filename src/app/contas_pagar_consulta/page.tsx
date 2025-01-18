@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Checkbox } from '@/components/ui/checkbox'
-import Header, { HeaderButton } from '@/components/header'
+import Header, { BotoesCabecalho } from '@/components/header'
+import { formatarDataHora, formatarMoeda } from '@/lib/utils'
 
 interface DataRow {
     id: number
@@ -37,7 +38,6 @@ const ContasPagarConsulta: React.FC = () => {
                 }
                 const result = await response.json()
                 setData(result)
-                console.log(result)
             } catch (err: any) {
                 setError(err.message || 'Erro desconhecido')
             } finally {
@@ -47,25 +47,6 @@ const ContasPagarConsulta: React.FC = () => {
 
         fetchData()
     }, [])
-
-    const formatDate = (dateString: string) => {
-        if (!dateString) return '' // Retorna vazio se a data for nula ou indefinida.
-        const date = new Date(dateString)
-        if (isNaN(date.getTime())) return '' // Verifica se a data é inválida.
-        const options: Intl.DateTimeFormatOptions = {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        }
-        return date.toLocaleDateString('pt-BR', options)
-    }
-
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-        }).format(value)
-    }
 
     const sortedData = [...data].sort((a, b) => {
         if (a[sortColumn] < b[sortColumn]) {
@@ -98,36 +79,18 @@ const ContasPagarConsulta: React.FC = () => {
         }
     }
 
-    // const getStatusIcon = (situacao: string) => {
-    //     switch (situacao) {
-    //         case 'Pago':
-    //             return <FontAwesomeIcon icon={faCheck} className="text-green-500" />
-    //         case 'Parcialmente Pago':
-    //             return <FontAwesomeIcon icon={faCheck} className="text-blue-500" />
-    //         case 'Pendente':
-    //             return <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500" />
-    //         case 'Atrasado':
-    //             return <FontAwesomeIcon icon={faExclamationCircle} className="text-red-500" />
-    //         default:
-    //             return null
-    //     }
-    // }
-
     return (
         <div className="h-screen w-full">
             <Header
-                isConsultaScreen={true}
-                title="Contas a Pagar"
-                userName="Domingos"
-                companyName="DELL Transportes"
+                TelaConsulta={true}
+                titulo="Contas a Pagar"
                 novo="contas_pagar_cadastro"
-                selectedIds={selectedIds}
-                data={data}
-                setData={setData}
-                routeConfig={{
-                    path: 'contas_pagar',
-                    deleteMessage: 'Tem certeza que deseja excluir as contas a pagar selecionadas?',
-                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.NEW, HeaderButton.DELETE],
+                idsSelecionados={selectedIds}
+                dados={data}
+                setDados={setData}
+                configuracoesRota={{
+                    caminho: 'contas_pagar',
+                    botoes: [BotoesCabecalho.VOLTAR, BotoesCabecalho.NOVO, BotoesCabecalho.EXCLUIR],
                 }}
             />
             <main className="w-full h-[91%] flex flex-col gap-8 p-3">
@@ -209,10 +172,10 @@ const ContasPagarConsulta: React.FC = () => {
                                     </TableCell>
                                     <TableCell className="text-left">{row.descricao}</TableCell>
                                     <TableCell className="text-left">{row.categoria.nome}</TableCell>
-                                    <TableCell className="text-center">{formatDate(row.data_vencimento)}</TableCell>
-                                    <TableCell className="text-center">{formatDate(row.data_pagamento)}</TableCell>
-                                    <TableCell className="text-right">{formatCurrency(row.valor_bruto)}</TableCell>
-                                    <TableCell className="text-right">{formatCurrency(row.valor_pago)}</TableCell>
+                                    <TableCell className="text-center">{formatarDataHora(row.data_vencimento)}</TableCell>
+                                    <TableCell className="text-center">{formatarDataHora(row.data_pagamento)}</TableCell>
+                                    <TableCell className="text-right">{formatarMoeda(row.valor_bruto)}</TableCell>
+                                    <TableCell className="text-right">{formatarMoeda(row.valor_pago)}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

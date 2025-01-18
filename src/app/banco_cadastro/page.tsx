@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import Header from '@/components/header'
-import { HeaderButton } from '@/components/header'
+import { BotoesCabecalho } from '@/components/header'
 
 interface FormData {
     id?: number
@@ -37,7 +37,6 @@ const BancoCadastro: React.FC = () => {
             return
         }
 
-        // Validar se o ID é um número positivo
         if (formData.id !== undefined && (isNaN(formData.id) || formData.id <= 0)) {
             toast.error('Código do banco deve ser um número positivo')
             return
@@ -70,19 +69,16 @@ const BancoCadastro: React.FC = () => {
     return (
         <div className="h-screen w-full">
             <Header
-                isConsultaScreen={true}
-                title="Cadastro de Banco"
-                userName="Usuário"
-                companyName="Empresa"
-                routeConfig={{
-                    path: 'banco',
-                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.SAVE],
-                    saveConfig: {
-                        data: formData,
-                        successMessage: 'Banco salvo com sucesso!',
-                        redirectTo: '/banco_consulta',
+                TelaConsulta={true}
+                titulo="Cadastro de Banco"
+                configuracoesRota={{
+                    caminho: 'banco',
+                    botoes: [BotoesCabecalho.VOLTAR, BotoesCabecalho.SALVAR],
+                    configuracoesSalvar: {
+                        dados: formData,
+                        redirecionarPara: '/banco_consulta',
                         successCallback: () => {
-                            setFormData({ id: undefined, nome: '' }) // Limpa o formulário
+                            setFormData({ id: undefined, nome: '' })
                         },
                     },
                 }}

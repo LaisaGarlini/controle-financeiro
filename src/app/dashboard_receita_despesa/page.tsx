@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Header from '@/components/header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-// import { DatePickerWithRange } from '@/components/ui/date-range-picker'
+import { DatePickerWithRange } from '@/components/DatePickerWithRange'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 
@@ -27,7 +27,7 @@ interface DateRange {
     to: Date
 }
 
-const ContasPagarConsulta: React.FC = () => {
+const DashboardReceitaDespesa: React.FC = () => {
     const [data, setData] = useState<DataRow[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
@@ -38,6 +38,7 @@ const ContasPagarConsulta: React.FC = () => {
         return { from: firstDay, to: lastDay }
     })
 
+    // Quando o dateRange mudar, faz a requisição
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -48,7 +49,6 @@ const ContasPagarConsulta: React.FC = () => {
                 }
                 const result = await response.json()
                 setData(result)
-                console.log(result)
             } catch (err: any) {
                 setError(err.message || 'Erro desconhecido')
             } finally {
@@ -57,7 +57,7 @@ const ContasPagarConsulta: React.FC = () => {
         }
 
         fetchData()
-    }, [dateRange])
+    }, [dateRange]) // Dependendo do range de datas, a requisição é chamada novamente
 
     const totalReceita = data.filter((item) => item.categoria.tipo === 1).reduce((sum, item) => sum + item.valor_pago, 0)
     const totalDespesa = data.filter((item) => item.categoria.tipo === 2).reduce((sum, item) => sum + item.valor_pago, 0)
@@ -90,14 +90,7 @@ const ContasPagarConsulta: React.FC = () => {
 
     return (
         <div className="h-screen w-full">
-            <Header
-                isConsultaScreen={true}
-                title="Receita X Despesa"
-                userName="Domingos"
-                companyName="DELL Transportes"
-                data={data}
-                setData={setData}
-            />
+            <Header TelaConsulta={false} titulo="Receitas X Despesas" />
             <main className="w-full h-[91%] flex flex-col gap-8 p-3">
                 {loading ? (
                     <p>Carregando dados...</p>
@@ -132,7 +125,7 @@ const ContasPagarConsulta: React.FC = () => {
                                     </CardContent>
                                 </Card>
                             </div>
-                            {/* <DatePickerWithRange date={dateRange} setDate={setDateRange} /> */}
+                            <DatePickerWithRange date={dateRange} setDate={setDateRange} className="custom-class" />
                         </div>
                         <div className="flex gap-4">
                             <Card className="w-1/2">
@@ -189,4 +182,4 @@ const ContasPagarConsulta: React.FC = () => {
     )
 }
 
-export default ContasPagarConsulta
+export default DashboardReceitaDespesa
