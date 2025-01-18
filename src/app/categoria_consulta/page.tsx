@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/navigation'
-import Header from '../../components/header'
+import Header, { HeaderButton } from '../../components/header'
 
 interface DataRow {
     id: number
@@ -121,6 +121,11 @@ const ContasPagarConsulta: React.FC = () => {
                 selectedIds={selectedIds}
                 data={data}
                 setData={setData}
+                routeConfig={{
+                    path: 'categoria',
+                    deleteMessage: 'Tem certeza que deseja excluir as categorias selecionadas?',
+                    buttons: [HeaderButton.BACK, HeaderButton.HOME, HeaderButton.NEW, HeaderButton.DELETE],
+                }}
             />
             <main className="w-full h-[91%] flex flex-col gap-8 p-3">
                 {loading ? (
