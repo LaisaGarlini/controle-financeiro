@@ -38,7 +38,6 @@ const DashboardReceitaDespesa: React.FC = () => {
         return { from: firstDay, to: lastDay }
     })
 
-    // Quando o dateRange mudar, faz a requisição
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -57,7 +56,7 @@ const DashboardReceitaDespesa: React.FC = () => {
         }
 
         fetchData()
-    }, [dateRange]) // Dependendo do range de datas, a requisição é chamada novamente
+    }, [dateRange])
 
     const totalReceita = data.filter((item) => item.categoria.tipo === 1).reduce((sum, item) => sum + item.valor_pago, 0)
     const totalDespesa = data.filter((item) => item.categoria.tipo === 2).reduce((sum, item) => sum + item.valor_pago, 0)

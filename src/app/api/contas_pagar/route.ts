@@ -24,6 +24,7 @@ export async function GET(request: Request) {
         return new Response(JSON.stringify(data), {
             headers: { 'Content-Type': 'application/json' },
         })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         return new Response(JSON.stringify({ error: 'Erro ao buscar dados' }), {
             status: 500,
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
 }
 
 function formatDateToDateObject(dateString: string): Date {
-    const [day, month, year] = dateString.split('/').map(Number)
+    const [year, month, day] = dateString.split('-').map(Number)
     return new Date(year, month - 1, day)
 }
 
@@ -83,6 +84,7 @@ export async function POST(request: Request) {
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
             })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return new Response(JSON.stringify({ error: 'Erro ao inserir dados no banco.' }), {
                 status: 500,
@@ -118,6 +120,7 @@ export async function DELETE(request: Request) {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         return new Response(JSON.stringify({ error: 'Erro ao excluir contas a pagar' }), {
             status: 500,

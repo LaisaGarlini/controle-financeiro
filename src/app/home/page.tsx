@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import {
     faTruck,
-    faPiggyBank,
     faMoneyBill,
     faUserGear,
+    faPiggyBank,
     faChartBar,
     faChartPie,
     faChartSimple,
@@ -21,25 +21,39 @@ import {
 import Link from 'next/link'
 import Header from '../../components/header'
 
-interface ItemProps {
-    icone: IconDefinition
+interface propriedadesItem {
+    icone?: IconDefinition
+    imagem?: string
     titulo: string
-    cor: string
+    cor?: string
     rota: string
 }
 
-const Item: React.FC<ItemProps> = ({ icone, titulo, cor, rota }) => (
-    <Link href={rota}>
+const Item: React.FC<propriedadesItem> = ({ icone, imagem, titulo, cor, rota }) => {
+    const isExternal = imagem !== undefined
+    const content = (
         <div className="w-1/4 min-w-[120px] h-full min-h-[120px] flex flex-col justify-around items-center p-4 hover:bg-[#f4f4f4] hover:scale-95 transition duration-300 ease-in-out">
-            <FontAwesomeIcon key={titulo} icon={icone} className={`${cor} w-12 h-12`} />
+            {imagem ? (
+                <img src={imagem} alt={titulo} className="w-12 h-12 object-contain" />
+            ) : (
+                icone && <FontAwesomeIcon icon={icone} className={`${cor} w-12 h-12`} />
+            )}
             <p className="text-base text-center">{titulo}</p>
         </div>
-    </Link>
-)
+    )
+
+    return isExternal ? (
+        <a href={rota} target="_blank" rel="noopener noreferrer">
+            {content}
+        </a>
+    ) : (
+        <Link href={rota}>{content}</Link>
+    )
+}
 
 interface ModuloProps {
     titulo: string
-    itens: ItemProps[]
+    itens: propriedadesItem[]
 }
 
 const Modulo: React.FC<ModuloProps> = ({ titulo, itens }) => (
@@ -61,7 +75,7 @@ const Home: React.FC = () => {
             titulo: 'Fretes',
             itens: [
                 { icone: faTruck, titulo: "CTE's", cor: 'text-green-600', rota: '/cte_consulta' },
-                { icone: faCloudArrowUp, titulo: "Importar CTE's", cor: 'text-blue-600', rota: '/' },
+                { icone: faCloudArrowUp, titulo: "Importar CTE's", cor: 'text-blue-600', rota: '/importar_cte' },
             ],
         },
         {
@@ -75,7 +89,7 @@ const Home: React.FC = () => {
             titulo: 'Pessoas',
             itens: [
                 { icone: faUserGear, titulo: 'Fornecedores', cor: 'text-blue-600', rota: '/' },
-                { icone: faPiggyBank, titulo: 'Granjeiros', cor: 'text-blue-600', rota: '/' },
+                { icone: faPiggyBank, titulo: 'Granjeiros', cor: 'text-blue-600', rota: '/granjeiros_consulta' },
             ],
         },
         {
@@ -96,6 +110,21 @@ const Home: React.FC = () => {
                 { icone: faCreditCard, titulo: 'Forma de Pagamento', cor: 'text-red-600', rota: '/' },
                 { icone: faMapLocationDot, titulo: 'Endereço', cor: 'text-green-600', rota: '/' },
                 { icone: faList, titulo: 'Categoria', cor: 'text-blue-600', rota: '/categoria_consulta' },
+            ],
+        },
+        {
+            titulo: 'Links Úteis',
+            itens: [
+                {
+                    imagem: '../../public/icons/cte.png',
+                    titulo: 'Portal do CTE',
+                    rota: 'https://www.cte.fazenda.gov.br/portal/consultaRecaptcha.aspx?tipoConsulta=resumo&tipoConteudo=cktLvUUKqh0=',
+                },
+                {
+                    imagem: '../../public/icons/myrp.png',
+                    titulo: 'MyRP',
+                    rota: 'https://prd.myrp.com.br/ControleAcesso/Sessao/Entrar?ReturnUrl=%2fERP%2fDashboard%3fnenhumaEmpresaVinculada%3d1&nenhumaEmpresaVinculada=1',
+                },
             ],
         },
     ]

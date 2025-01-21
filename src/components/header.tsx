@@ -57,13 +57,13 @@ export default function Header({ TelaConsulta, titulo, novo, idsSelecionados, da
         if (novo) {
             router.push(novo)
         } else {
-            console.warn("Caminho para 'novo' não foi especificado.")
+            toast.warning("Caminho para 'novo' não foi especificado.")
         }
     }
 
     const handleDelete = async () => {
         if (!configuracoesRota?.caminho) {
-            console.warn('Configuração de rota não fornecida')
+            toast.warning('Configuração de rota não fornecida')
             return
         }
 
@@ -110,7 +110,7 @@ export default function Header({ TelaConsulta, titulo, novo, idsSelecionados, da
 
     const handleSave = async () => {
         if (!configuracoesRota?.caminho || !configuracoesRota.configuracoesSalvar) {
-            console.warn('Configuração de salvamento não fornecida')
+            toast.warning('Configuração de salvamento não fornecida')
             return
         }
 

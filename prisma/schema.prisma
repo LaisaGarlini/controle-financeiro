@@ -188,6 +188,7 @@ model Municipio {
   ctes_inicio  CTE[] @relation("MunicipioInicio")
   ctes_fim     CTE[] @relation("MunicipioFim")
 
+  @@unique([nome, estadoId])
   @@map("municipio")
 }
 

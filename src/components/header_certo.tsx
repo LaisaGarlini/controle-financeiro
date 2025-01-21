@@ -67,23 +67,23 @@ export default function Cabecalho({
         if (novo) {
             roteador.push(novo)
         } else {
-            console.warn("Caminho para 'novo' não foi especificado.")
+            toast.warning('Caminho para novo não foi especificado.')
         }
     }
 
     const lidarComExclusao = async () => {
         if (!configuracaoRota?.caminho) {
-            console.warn('Configuração de rota não fornecida')
+            toast.warning('Configuração de rota não fornecida')
             return
         }
 
         if (!idsSeleccionados?.size) {
-            toast.error('Selecione ao menos um item para excluir.')
+            toast.warning('Selecione ao menos um item para excluir')
             return
         }
 
         if (!dados || !definirDados) {
-            toast.error('Dados não disponíveis.')
+            toast.error('Dados não disponíveis')
             return
         }
 
@@ -120,7 +120,7 @@ export default function Cabecalho({
 
     const lidarComSalvar = async () => {
         if (!configuracaoRota?.caminho || !configuracaoRota.configuracaoSalvar) {
-            console.warn('Configuração de salvamento não fornecida')
+            toast.warning('Configuração de salvamento não fornecida')
             return
         }
 
